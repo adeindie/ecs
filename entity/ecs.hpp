@@ -139,11 +139,11 @@ namespace entity
 		/*
 		Component management.
 		*/
-		template <typename T> void add_component(T component);
-		template <typename T, typename ... Args> void add_component(Args && ... args);
-		template <typename T> void remove_component();
-		template <typename T> bool has_component() const;
-		template <typename T> T& get_component() const;
+		template <typename T> void add(T component);
+		template <typename T, typename ... Args> void add(Args && ... args);
+		template <typename T> void remove();
+		template <typename T> bool has() const;
+		template <typename T> T& get() const;
 
 		/*
 		Tags the entity.
@@ -439,31 +439,31 @@ namespace entity
 	}
 
 	template <typename T>
-	void Entity::add_component(T component)
+	void Entity::add(T component)
 	{
 		entities->add_component<T>(*this, component);
 	}
 
 	template <typename T, typename ... Args>
-	void Entity::add_component(Args && ... args)
+	void Entity::add(Args && ... args)
 	{
 		entities->add_component<T>(*this, std::forward<Args>(args)...);
 	}
 
 	template <typename T>
-	void Entity::remove_component()
+	void Entity::remove()
 	{
 		entities->remove_component<T>(*this);
 	}
 
 	template <typename T>
-	bool Entity::has_component() const
+	bool Entity::has() const
 	{
 		return entities->has_component<T>(*this);
 	}
 
 	template <typename T>
-	T& Entity::get_component() const
+	T& Entity::get() const
 	{
 		return entities->get_component<T>(*this);
 	}

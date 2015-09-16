@@ -33,14 +33,14 @@ int main()
 {
 	Entities world;
 	Entity e = world.create();
-	e.add_component<PositionComponent>(50, 50);
+	e.add<PositionComponent>(50, 50);
 	world.add_system<MoveSystem>();
 
 	world.update();
 	MoveSystem& ms = world.get_system<MoveSystem>();
 	ms.update(1.0f);
 
-	PositionComponent &pc = e.get_component<PositionComponent>();
+	PositionComponent &pc = e.get<PositionComponent>();
 
 	cout << "x: " << pc.x << ", y: " << pc.y << endl;
 
