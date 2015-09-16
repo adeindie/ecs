@@ -5,23 +5,23 @@ A minimal entity-component system
 
 brief synopsis
 --------------
-Everything begins with a world.
+Everything begins with Entities.
 
 ```c++
-#include "entity/world.hpp"
-World world;
+#include "entity/ecs.hpp"
+Entities entities;
 ```
 
-You use the world to create entities.
+Create entities:
 
 ```c++
-auto e = world.create_entity();
+auto e = entities.create();
 ```
 
 An entity is basically just an id. You can add components to entities.
 
 ```c++
-e.add_component<PositionComponent>(100, 100);
+e.add<PositionComponent>(100, 100);
 ```
 
 Before you add components, you must define them.
@@ -34,10 +34,10 @@ struct PositionComponent
 };
 ```
 
-The entities interact with the world through systems. You can add systems to the world by using its system manager.
+The entities are updated through systems, which are added like this:
 
 ```c++
-world.get_system_manager().add_system<MoveSystem>();
+entities.add_system<MoveSystem>();
 ```
 
 Before you add systems, you must define them.
@@ -55,8 +55,8 @@ class MoveSystem : System
     {
         for (auto e : get_entities()) {
             if (e.is_alive()) {
-                auto &pos = e.get_component<PositionComponent>();
-                const auto vel = e.get_component<VelocityComponent>();
+                auto &pos = e.get<PositionComponent>();
+                const auto vel = e.get<VelocityComponent>();
                 pos.x += vel.x * delta;
                 pos.y += vel.y * delta;
             }
@@ -75,8 +75,8 @@ is removed from the system's list of interest.
 Now, we have all we need. Entities, components and systems. The only thing missing is the game loop, or rather, what needs to happen each frame in the game loop.
 
 ```c++
-world.update();
-auto &move_system = world.get_system_manager().get_system<MoveSystem>();
+entities.update();
+auto &move_system = entities.get_system<MoveSystem>();
 move_system.update();
 ```
 
