@@ -19,32 +19,17 @@ namespace entity
     class Pool : public BasePool
     {
     public:
-        Pool(int size = 100)
-        {
-            resize(size);
-        }
+        Pool(int size = 100) { resize(size); }
 
         virtual ~Pool() {};
 
-        bool is_empty() const
-        {
-            return data.empty();
-        }
+        bool is_empty() const { return data.empty(); }
 
-        unsigned int get_size() const
-        {
-            return data.size();
-        }
+        unsigned int get_size() const { return data.size();  }
 
-        void resize(int n)
-        {
-            data.resize(n);
-        }
+        void resize(int n) { data.resize(n); }
 
-        void clear()
-        {
-            data.clear();
-        }
+        void clear() { data.clear(); }
 
         bool set(unsigned int index, T object)
         {
@@ -59,20 +44,11 @@ namespace entity
             return static_cast<T&>(data[index]);
         }
 
-        void add(T object)
-        {
-            data.push_back(object);
-        }
+        void add(T object) { data.push_back(object); }
 
-        T& operator[](unsigned int index)
-        {
-            return data[index];
-        }
+        T& operator[](unsigned int index) { return data[index]; }
 
-        const T& operator[](unsigned int index) const
-        {
-            return data[index];
-        }
+        const T& operator[](unsigned int index) const { return data[index]; }
 
     private:
         std::vector<T> data;
