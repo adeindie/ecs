@@ -8,7 +8,7 @@ brief synopsis
 Everything begins with Entities.
 
 ```c++
-#include "entity/ecs.hpp"
+#include "ecs.hpp"
 Entities entities;
 ```
 

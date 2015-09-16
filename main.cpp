@@ -1,4 +1,4 @@
-#include "entity/ecs.hpp"
+#include "ecs.hpp"
 #include <iostream>
 using namespace entity;
 using namespace std;
