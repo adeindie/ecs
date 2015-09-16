@@ -5,44 +5,44 @@ using namespace std;
 
 struct PositionComponent
 {
-    PositionComponent(int x = 0, int y = 0) : x(x), y(y) {}
-    int x, y;
+	PositionComponent(int x = 0, int y = 0) : x(x), y(y) {}
+	int x, y;
 };
 
 struct VelocityComponent
 {
-    VelocityComponent(int dx = 0, int dy = 0) : dx(dx), dy(dy) {}
-    int dx, dy;
+	VelocityComponent(int dx = 0, int dy = 0) : dx(dx), dy(dy) {}
+	int dx, dy;
 };
 
 class MoveSystem : public System
 {
 public:
-    MoveSystem()
-    {
-        require_component<PositionComponent>();
-    }
+	MoveSystem()
+	{
+		require_component<PositionComponent>();
+	}
 
-    virtual void update(float delta)
-    {
-        cout << "i moved!" << endl;
-    }
+	virtual void update(float delta)
+	{
+		cout << "i moved!" << endl;
+	}
 };
 
 int main()
 {
-    Entities world;
-    Entity e = world.create();
-    e.add_component<PositionComponent>(50, 50);
-    world.add_system<MoveSystem>();
+	Entities world;
+	Entity e = world.create();
+	e.add_component<PositionComponent>(50, 50);
+	world.add_system<MoveSystem>();
 
-    world.update();
-    MoveSystem& ms = world.get_system<MoveSystem>();
-    ms.update(1.0f);
+	world.update();
+	MoveSystem& ms = world.get_system<MoveSystem>();
+	ms.update(1.0f);
 
-    PositionComponent &pc = e.get_component<PositionComponent>();
+	PositionComponent &pc = e.get_component<PositionComponent>();
 
-    cout << "x: " << pc.x << ", y: " << pc.y << endl;
+	cout << "x: " << pc.x << ", y: " << pc.y << endl;
 
-    return 0;
+	return 0;
 }
