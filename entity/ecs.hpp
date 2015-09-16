@@ -13,7 +13,7 @@
 
 namespace entity
 {
-    class World;
+    class Entities;
 
     // Used to be able to assign unique ids to each component type.
     struct BaseComponent
@@ -117,8 +117,8 @@ namespace entity
         // Id = index + version (kinda).
         Id id;
 
-        World *entities = nullptr;
-        friend class World;
+        Entities *entities = nullptr;
+        friend class Entities;
     };
 
     // The system processes entities that it's interested in each frame. Derive from this one!
@@ -146,7 +146,7 @@ namespace entity
         const ComponentMask& get_component_mask() const { return component_mask; }
 
     private:
-        World& get_world() const;
+        Entities& get_world() const;
 
         // which components an entity must have in order for the system to process the entity
         ComponentMask component_mask;
@@ -154,8 +154,8 @@ namespace entity
         // vector of all entities that the system is interested in
         std::vector<Entity> entities;
 
-        World *world = nullptr;
-        friend class World;
+        Entities *world = nullptr;
+        friend class Entities;
     };
 
     template <typename T>
@@ -167,16 +167,16 @@ namespace entity
 
 
     /*
-    The World manages the creation and destruction of entities so that entities don't show up/disappear mid-frame.
+    The Entities manages the creation and destruction of entities so that entities don't show up/disappear mid-frame.
     It also has all the managers (entity, system, event), which can be accessed by the systems using the getters.
     */
-    class World
+    class Entities
     {
     public:
         /*
         Creates all the managers.
         */
-        World();
+        Entities();
 
         /*
         Updates the systems so that created/deleted entities are removed from the systems' vectors of entities.
@@ -274,7 +274,7 @@ namespace entity
     };
 
     template <typename T>
-    void World::add_system()
+    void Entities::add_system()
     {
         if (has_system<T>()) {
             return;
@@ -286,7 +286,7 @@ namespace entity
     }
 
     template <typename T>
-    void World::remove_system()
+    void Entities::remove_system()
     {
         if (!has_system<T>()) {
             return;
@@ -297,7 +297,7 @@ namespace entity
     }
 
     template <typename T>
-    T& World::get_system()
+    T& Entities::get_system()
     {
         if (!has_system<T>()) {
             throw std::runtime_error(std::string("Failed to get system: ") + typeid(T).name());
@@ -308,13 +308,13 @@ namespace entity
     }
 
     template <typename T>
-    bool World::has_system() const
+    bool Entities::has_system() const
     {
         return systems.find(std::type_index(typeid(T))) != systems.end();
     }
 
     template <typename T>
-    void World::add_component(Entity e, T component)
+    void Entities::add_component(Entity e, T component)
     {
         const auto component_id = Component<T>::get_id();
         const auto entity_id = e.get_index();
@@ -329,14 +329,14 @@ namespace entity
     }
 
     template <typename T, typename ... Args>
-    void World::add_component(Entity e, Args && ... args)
+    void Entities::add_component(Entity e, Args && ... args)
     {
         T component(std::forward<Args>(args) ...);
         add_component<T>(e, component);
     }
 
     template <typename T>
-    void World::remove_component(Entity e)
+    void Entities::remove_component(Entity e)
     {
         const auto component_id = Component<T>::get_id();
         const auto entity_id = e.get_index();
@@ -345,7 +345,7 @@ namespace entity
     }
 
     template <typename T>
-    bool World::has_component(Entity e) const
+    bool Entities::has_component(Entity e) const
     {
         const auto component_id = Component<T>::get_id();
         const auto entity_id = e.get_index();
@@ -354,7 +354,7 @@ namespace entity
     }
 
     template <typename T>
-    T& World::get_component(Entity e) const
+    T& Entities::get_component(Entity e) const
     {
         const auto component_id = Component<T>::get_id();
         const auto entity_id = e.get_index();
@@ -369,7 +369,7 @@ namespace entity
     }
 
     template <typename T>
-    std::shared_ptr<Pool<T>> World::accommodate_component()
+    std::shared_ptr<Pool<T>> Entities::accommodate_component()
     {
         const auto component_id = Component<T>::get_id();
 

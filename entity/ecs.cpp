@@ -46,18 +46,18 @@ namespace entity
         ), entities.end());
     }
 
-    World& System::get_world() const
+    Entities& System::get_world() const
     {
         assert(world != nullptr);
         return *world;
     }
 
 
-    World::World()
+    Entities::Entities()
     {
     }
 
-    void World::update()
+    void Entities::update()
     {
         for (auto e : created_entities) {
             update_systems(e);
@@ -70,7 +70,7 @@ namespace entity
         killed_entities.clear();
     }
 
-    void World::update_systems(Entity e)
+    void Entities::update_systems(Entity e)
     {
         const auto &entity_component_mask = get_component_mask(e);
 
@@ -85,19 +85,19 @@ namespace entity
         }
     }
 
-    Entity World::create()
+    Entity Entities::create()
     {
         auto e = create_entity();
         created_entities.push_back(e);
         return e;
     }
 
-    void World::kill(Entity e)
+    void Entities::kill(Entity e)
     {
         killed_entities.push_back(e);
     }
 
-    Entity World::create_entity()
+    Entity Entities::create_entity()
     {
         Entity::Id index;
 
@@ -123,7 +123,7 @@ namespace entity
         return e;
     }
 
-    void World::destroy_entity(Entity e)
+    void Entities::destroy_entity(Entity e)
     {
         const auto index = e.get_index();
         assert(index < versions.size());        // sanity check
@@ -133,48 +133,48 @@ namespace entity
         component_masks[index].reset();         // reset the component mask for that id
     }
 
-    bool World::is_entity_alive(Entity e) const
+    bool Entities::is_entity_alive(Entity e) const
     {
         const auto index = e.get_index();
         assert(index < versions.size());
         return versions[index] == e.get_version();
     }
 
-    const ComponentMask& World::get_component_mask(Entity e) const
+    const ComponentMask& Entities::get_component_mask(Entity e) const
     {
         const auto index = e.get_index();
         assert(index < component_masks.size());
         return component_masks[index];
     }
 
-    void World::tag_entity(Entity e, std::string tag_name)
+    void Entities::tag_entity(Entity e, std::string tag_name)
     {
         tagged_entities.emplace(tag_name, e);
     }
 
-    bool World::has_tagged_entity(std::string tag_name) const
+    bool Entities::has_tagged_entity(std::string tag_name) const
     {
         return tagged_entities.find(tag_name) != tagged_entities.end();
     }
 
-    Entity World::get_entity_by_tag(std::string tag_name)
+    Entity Entities::get_entity_by_tag(std::string tag_name)
     {
         assert(has_tagged_entity(tag_name));
         return tagged_entities[tag_name];
     }
 
-    void World::group_entity(Entity e, std::string group_name)
+    void Entities::group_entity(Entity e, std::string group_name)
     {
         entity_groups.emplace(group_name, std::set<Entity>());
         entity_groups[group_name].emplace(e);
     }
 
-    bool World::has_entity_group(std::string group_name) const
+    bool Entities::has_entity_group(std::string group_name) const
     {
         return entity_groups.find(group_name) != entity_groups.end();
     }
 
-    std::vector<Entity> World::get_entity_group(std::string group_name)
+    std::vector<Entity> Entities::get_entity_group(std::string group_name)
     {
         assert(has_entity_group(group_name));
         auto &s = entity_groups[group_name];

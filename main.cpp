@@ -31,7 +31,7 @@ public:
 
 int main()
 {
-    World world;
+    Entities world;
     Entity e = world.create();
     e.add_component<PositionComponent>(50, 50);
     world.add_system<MoveSystem>();
