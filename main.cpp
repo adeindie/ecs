@@ -43,6 +43,7 @@ int main()
 	PositionComponent &pc = e.get<PositionComponent>();
 
 	cout << "x: " << pc.x << ", y: " << pc.y << endl;
+	cout << e.to_string() << endl;
 
 	return 0;
 }

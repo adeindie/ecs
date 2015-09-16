@@ -30,7 +30,7 @@ namespace entity
 
 	std::string Entity::to_string() const
 	{
-		std::string s = "entity id: " + std::to_string(get_index()) + ", version: " + std::to_string(get_version());
+		std::string s = "entity_" + std::to_string(get_index()) + "_v" + std::to_string(get_version());
 		return s;
 	}
 
