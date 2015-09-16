@@ -4,6 +4,7 @@
 
 namespace entity
 {
+    BaseComponent::Id BaseComponent::id_counter = 0;
 
     void Entity::kill()
     {

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "component.hpp"
 #include "pool.hpp"
 #include <vector>
 #include <deque>
@@ -9,11 +8,37 @@
 #include <memory>
 #include <string>
 #include <cstdint>
+#include <bitset>
 
 namespace entity
 {
     class World;
     class EntityManager;
+
+    // Used to be able to assign unique ids to each component type.
+    struct BaseComponent
+    {
+        using Id = uint8_t;
+        static const Id MAX_COMPONENTS = 64;
+    protected:
+        static Id id_counter;
+    };
+
+    // Used to assign a unique id to a component type, we don't really have to make our components derive from this though.
+    template <typename T>
+    struct Component : BaseComponent
+    {
+        // Returns the unique id of Component<T>
+        static Id get_id()
+        {
+            static auto id = id_counter++;
+            assert(id < MAX_COMPONENTS);
+            return id;
+        }
+    };
+
+    // Used to keep track of which components an entity has and also which entities a system is interested in.
+    using ComponentMask = std::bitset<BaseComponent::MAX_COMPONENTS>;
 
     // Basically just an id.
     class Entity
