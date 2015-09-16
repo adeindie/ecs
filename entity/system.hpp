@@ -1,6 +1,5 @@
 #pragma once
 
-#include "event.hpp"
 #include "entity.hpp"
 #include <vector>
 #include <unordered_map>

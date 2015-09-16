@@ -8,7 +8,6 @@ namespace entity
     {
         entity_manager = std::make_unique<EntityManager>(*this);
         system_manager = std::make_unique<SystemManager>(*this);
-        event_manager = std::make_unique<EventManager>(*this);
     }
 
     EntityManager& World::get_entity_manager() const
@@ -23,12 +22,6 @@ namespace entity
         return *system_manager;
     }
 
-    EventManager& World::get_event_manager() const
-    {
-        assert(event_manager != nullptr);
-        return *event_manager;
-    }
-
     void World::update()
     {
         for (auto e : created_entities) {
@@ -40,8 +33,6 @@ namespace entity
             get_entity_manager().destroy_entity(e);
         }
         killed_entities.clear();
-
-        get_event_manager().destroy_events();
     }
 
     Entity World::create_entity()

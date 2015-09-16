@@ -2,7 +2,6 @@
 
 #include "entity.hpp"
 #include "system.hpp"
-#include "event.hpp"
 #include <vector>
 #include <string>
 #include <memory>
@@ -26,7 +25,6 @@ namespace entity
         */
         EntityManager& get_entity_manager() const;
         SystemManager& get_system_manager() const;
-        EventManager& get_event_manager() const;
 
         /*
         Updates the systems so that created/deleted entities are removed from the systems' vectors of entities.
@@ -65,7 +63,6 @@ namespace entity
         // the managers
         std::unique_ptr<EntityManager> entity_manager = nullptr;
         std::unique_ptr<SystemManager> system_manager = nullptr;
-        std::unique_ptr<EventManager> event_manager = nullptr;
     };
 
 }
