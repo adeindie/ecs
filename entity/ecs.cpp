@@ -1,5 +1,4 @@
 #include "ecs.hpp"
-#include <cassert>
 #include <algorithm>
 
 namespace entity
