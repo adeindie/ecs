@@ -7,6 +7,8 @@ namespace entity
 
     BaseComponent::Id BaseComponent::id_counter = 0;
 
+    // Entity
+
     void Entity::kill()
     {
         entities->kill(*this);
@@ -33,6 +35,7 @@ namespace entity
         return s;
     }
 
+    // System
 
     void System::add_entity(Entity e)
     {
@@ -46,12 +49,7 @@ namespace entity
         ), entities.end());
     }
 
-    Entities& System::get_world() const
-    {
-        assert(world != nullptr);
-        return *world;
-    }
-
+    // Entities
 
     Entities::Entities()
     {

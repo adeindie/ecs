@@ -40,6 +40,8 @@ namespace entity
     // Used to keep track of which components an entity has and also which entities a system is interested in.
     using ComponentMask = std::bitset<BaseComponent::MAX_COMPONENTS>;
 
+    // Entity
+
     // Basically just an id.
     class Entity
     {
@@ -121,6 +123,8 @@ namespace entity
         friend class Entities;
     };
 
+    // System
+
     // The system processes entities that it's interested in each frame. Derive from this one!
     class System
     {
@@ -153,9 +157,6 @@ namespace entity
 
         // vector of all entities that the system is interested in
         std::vector<Entity> entities;
-
-        Entities *world = nullptr;
-        friend class Entities;
     };
 
     template <typename T>
@@ -165,6 +166,7 @@ namespace entity
         component_mask.set(component_id);
     }
 
+    // Entities
 
     /*
     The Entities manages the creation and destruction of entities so that entities don't show up/disappear mid-frame.
@@ -281,7 +283,6 @@ namespace entity
         }
 
         std::shared_ptr<T> system(new T);
-        system->world = this;
         systems.insert(std::make_pair(std::type_index(typeid(T)), system));
     }
 
