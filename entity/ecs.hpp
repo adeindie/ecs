@@ -202,8 +202,6 @@ namespace entity
 		const ComponentMask& get_component_mask() const { return component_mask; }
 
 	private:
-		Entities& get_world() const;
-
 		// which components an entity must have in order for the system to process the entity
 		ComponentMask component_mask;
 
