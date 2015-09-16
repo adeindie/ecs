@@ -1,18 +1,60 @@
 #include "world.hpp"
 #include <cassert>
+#include <algorithm>
 
 namespace entity
 {
 
-    World::World()
+    BaseComponent::Id BaseComponent::id_counter = 0;
+
+    void Entity::kill()
     {
-        entity_manager = std::make_unique<EntityManager>(*this);
+        entities->kill(*this);
     }
 
-    EntityManager& World::get_entity_manager() const
+    bool Entity::is_alive() const
     {
-        assert(entity_manager != nullptr);
-        return *entity_manager;
+        return entities->is_entity_alive(*this);
+    }
+
+    void Entity::tag(std::string tag_name)
+    {
+        entities->tag_entity(*this, tag_name);
+    }
+
+    void Entity::group(std::string group_name)
+    {
+        entities->group_entity(*this, group_name);
+    }
+
+    std::string Entity::to_string() const
+    {
+        std::string s = "entity id: " + std::to_string(get_index()) + ", version: " + std::to_string(get_version());
+        return s;
+    }
+
+
+    void System::add_entity(Entity e)
+    {
+        entities.push_back(e);
+    }
+
+    void System::remove_entity(Entity e)
+    {
+        entities.erase(std::remove_if(entities.begin(), entities.end(),
+            [&e](Entity other) { return e == other; }
+        ), entities.end());
+    }
+
+    World& System::get_world() const
+    {
+        assert(world != nullptr);
+        return *world;
+    }
+
+
+    World::World()
+    {
     }
 
     void World::update()
@@ -23,14 +65,14 @@ namespace entity
         created_entities.clear();
 
         for (auto e : killed_entities) {
-            get_entity_manager().destroy_entity(e);
+            destroy_entity(e);
         }
         killed_entities.clear();
     }
 
     void World::update_systems(Entity e)
     {
-        const auto &entity_component_mask = get_entity_manager().get_component_mask(e);
+        const auto &entity_component_mask = get_component_mask(e);
 
         for (auto &it : systems) {
             auto system = it.second;
@@ -43,26 +85,100 @@ namespace entity
         }
     }
 
-    Entity World::create_entity()
+    Entity World::create()
     {
-        auto e = get_entity_manager().create_entity();
+        auto e = create_entity();
         created_entities.push_back(e);
         return e;
     }
 
-    void World::kill_entity(Entity e)
+    void World::kill(Entity e)
     {
         killed_entities.push_back(e);
     }
 
-    Entity World::get_entity(std::string tag_name) const
+    Entity World::create_entity()
     {
-        return get_entity_manager().get_entity_by_tag(tag_name);
+        Entity::Id index;
+
+        if (free_ids.size() > MINIMUM_FREE_IDS) {
+            index = free_ids.front();
+            free_ids.pop_front();
+        }
+        else {
+            versions.push_back(0);
+            index = (unsigned int)versions.size() - 1;
+            assert(index < (1 << Entity::INDEX_BITS));
+
+            if (index >= component_masks.size()) {
+                // TODO: grow by doubling?
+                component_masks.resize(index + 1);
+            }
+        }
+
+        assert(index < versions.size());
+        Entity e(index, versions[index]);
+        e.entities = this;
+
+        return e;
     }
 
-    std::vector<Entity> World::get_entity_group(std::string group_name) const
+    void World::destroy_entity(Entity e)
     {
-        return get_entity_manager().get_entity_group(group_name);
+        const auto index = e.get_index();
+        assert(index < versions.size());        // sanity check
+        assert(index < component_masks.size());
+        ++versions[index];                      // increase the version for that id
+        free_ids.push_back(index);              // make the id available for reuse
+        component_masks[index].reset();         // reset the component mask for that id
+    }
+
+    bool World::is_entity_alive(Entity e) const
+    {
+        const auto index = e.get_index();
+        assert(index < versions.size());
+        return versions[index] == e.get_version();
+    }
+
+    const ComponentMask& World::get_component_mask(Entity e) const
+    {
+        const auto index = e.get_index();
+        assert(index < component_masks.size());
+        return component_masks[index];
+    }
+
+    void World::tag_entity(Entity e, std::string tag_name)
+    {
+        tagged_entities.emplace(tag_name, e);
+    }
+
+    bool World::has_tagged_entity(std::string tag_name) const
+    {
+        return tagged_entities.find(tag_name) != tagged_entities.end();
+    }
+
+    Entity World::get_entity_by_tag(std::string tag_name)
+    {
+        assert(has_tagged_entity(tag_name));
+        return tagged_entities[tag_name];
+    }
+
+    void World::group_entity(Entity e, std::string group_name)
+    {
+        entity_groups.emplace(group_name, std::set<Entity>());
+        entity_groups[group_name].emplace(e);
+    }
+
+    bool World::has_entity_group(std::string group_name) const
+    {
+        return entity_groups.find(group_name) != entity_groups.end();
+    }
+
+    std::vector<Entity> World::get_entity_group(std::string group_name)
+    {
+        assert(has_entity_group(group_name));
+        auto &s = entity_groups[group_name];
+        return std::vector<Entity>(s.begin(), s.end());
     }
 
 }
