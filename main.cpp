@@ -34,10 +34,10 @@ int main()
     World world;
     Entity e = world.create_entity();
     e.add_component<PositionComponent>(50, 50);
-    world.get_system_manager().add_system<MoveSystem>();
+    world.add_system<MoveSystem>();
 
     world.update();
-    MoveSystem& ms = world.get_system_manager().get_system<MoveSystem>();
+    MoveSystem& ms = world.get_system<MoveSystem>();
     ms.update(1.0f);
 
     PositionComponent &pc = e.get_component<PositionComponent>();

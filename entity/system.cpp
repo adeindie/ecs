@@ -23,19 +23,4 @@ namespace entity
         return *world;
     }
 
-    void SystemManager::update_systems(Entity e)
-    {
-        const auto &entity_component_mask = world.get_entity_manager().get_component_mask(e);
-
-        for (auto &it : systems) {
-            auto system = it.second;
-            const auto &system_component_mask = system->get_component_mask();
-            auto interest = (entity_component_mask & system_component_mask) == system_component_mask;
-
-            if (interest) {
-                system->add_entity(e);
-            }
-        }
-    }
-
 }
