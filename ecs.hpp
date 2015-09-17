@@ -11,7 +11,7 @@
 #include <typeindex>
 #include <cassert>
 
-namespace entity
+namespace ecs
 {
 	// Pool
 

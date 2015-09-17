@@ -1,5 +1,5 @@
-entity
-======
+ecs
+===
 
 A minimal entity-component system
 

@@ -1,6 +1,6 @@
 #include "ecs.hpp"
 #include <iostream>
-using namespace entity;
+using namespace ecs;
 using namespace std;
 
 struct PositionComponent
