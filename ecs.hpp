@@ -19,7 +19,7 @@ namespace entity
 	class BasePool
 	{
 	public:
-		virtual ~BasePool() {};
+		virtual ~BasePool() {}
 		virtual void clear() = 0;
 	};
 
@@ -30,7 +30,7 @@ namespace entity
 	public:
 		Pool(int size = 100) { resize(size); }
 
-		virtual ~Pool() {};
+		virtual ~Pool() {}
 
 		bool is_empty() const { return data.empty(); }
 
