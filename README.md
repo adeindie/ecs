@@ -1,9 +1,17 @@
 ecs
 ===
 
-A minimal entity-component system
+A minimal entity-component system.
 
-brief synopsis
+This is based on [arvidsson's "entity"](https://github.com/arvidsson/entity), with the following key differences:
+
+* Merged World, EntityManager and SystemManager into one class
+* Events removed for now as I don't need them
+* Renamed a bunch of stuff
+* Less code files (just one header and one cpp)
+
+
+Brief Synopsis
 --------------
 Everything begins with Entities.
 
@@ -78,6 +86,14 @@ Now, we have all we need. Entities, components and systems. The only thing missi
 entities.update();
 auto &move_system = entities.get_system<MoveSystem>();
 move_system.update();
+```
+
+You don't need to to use Systems though, you can also iterate over entities with certain components using a lambda interface:
+
+```c++
+entities.for_each<PositionComponent, VelocityComponent>([](Entity e, PositionComponent& pos, VelocityComponent& vel) {
+	// Do stuff with the params
+});
 ```
 
 Each frame, the world needs to be updated. This means that the entities that were created and destroyed in the previous frame are *actually* created and destroyed 
