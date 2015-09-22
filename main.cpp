@@ -23,7 +23,7 @@ public:
 		require_component<PositionComponent>();
 	}
 
-	virtual void update(float delta)
+	void update(float delta)
 	{
 		cout << "i moved!" << endl;
 	}

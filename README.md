@@ -59,7 +59,7 @@ class MoveSystem : System
         require_component<VelocityComponent>()
     }
 
-    virtual void update(float dt)
+    void update(float dt)
     {
         for (auto e : get_entities()) {
             if (e.is_alive()) {

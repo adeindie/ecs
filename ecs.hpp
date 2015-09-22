@@ -188,7 +188,7 @@ namespace ecs
 		virtual ~System() {}
 
 		// override this!
-		virtual void update(float dt = 0.0f) = 0;
+		//virtual void update(float dt = 0.0f) = 0;
 
 		// what component types the system requires of entities (we can use this method in the constructor for example)
 		template <typename T>
