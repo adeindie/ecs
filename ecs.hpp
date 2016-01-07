@@ -73,7 +73,7 @@ namespace ecs
 	struct BaseComponent
 	{
 		using Id = uint8_t;
-		static const Id MAX_COMPONENTS = 64;
+		static const Id MAX_COMPONENTS = 32;
 	protected:
 		static Id id_counter;
 	};
